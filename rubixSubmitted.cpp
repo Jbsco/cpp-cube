@@ -6,6 +6,7 @@
 #include<string>
 #include<fstream>
 #include<cmath>
+#include<time.h>
 
 using namespace std;
 
@@ -30,22 +31,17 @@ int main(){
     char cubeMap[9][6];                 //  Initialize variables
     int turnNum = 0;
     int timeInit = time(NULL);          //  Initialize starting time
-
-
     string input;                       //  Initialize input
     cout << "\nTimer initialized. Your cube is:\n\n";
     cubeInit(cubeMap);                  //  Initialize cubeMap
     scrambler(cubeMap);                 //  Randomize cubeMap
     cubePrint(cubeMap);                 //  Print starting cubeMap
-
-//  MAIN FUNCTION LOOP
+    //  MAIN FUNCTION LOOP
     do{
         cout << "Turn #" << turnNum << ".\n";
         userInput(input);               //  Take move inputs
         turnNum++;
-        if(input == "Quit"){
-            return 0;
-        }
+        if(input == "Quit") return 0;
 /*      if(input == "RandomSolve"){     //  Commented out, but allows continuous calls of scrambler until cube is solved (tested for 2.4e7 iterations with no solution)
             int i = 0;
             do{
@@ -62,9 +58,8 @@ int main(){
         timePrint(timeInit);
     }
     while(cubeValidate(cubeMap) != true);
-
-//  WIN CONDITION
-//  Call cubeTime with conditional flag for win scenario, update external file.
+    //  WIN CONDITION
+    //  Call cubeTime with conditional flag for win scenario, update external file.
     cubeTime(timeInit, turnNum, cubeValidate(cubeMap));
     return 0;
 }
@@ -72,9 +67,7 @@ int main(){
 void cubeInit(char a[9][6]){    //  Initializes all faces of array
     int i, j;
     for(i = 0; i < 6; i++){
-        for(j = 0; j < 9; j++){
-            a[j][i] = cubeInitSub(i);   //  Call subroutine based on current index value
-        }
+        for(j = 0; j < 9; j++) a[j][i] = cubeInitSub(i);   //  Call subroutine based on current index value
     }
 }
 
@@ -212,9 +205,7 @@ void cubePrintRow(int a, int b, char c[9][6]){  //  Subroutine for cubePrint
         default:
             break;
     }
-    for(int i = 0; i < 3; i++){
-        cout << c[d + i][b] << " ";
-    }
+    for(int i = 0; i < 3; i++) cout << c[d + i][b] << " ";
 }
 
 void userInput(string &a){  //  Ask for input and update 'a'
@@ -246,35 +237,17 @@ void userInput(string &a){  //  Ask for input and update 'a'
 void cubeRotate(char a[9][6], string b){    //  Whole cube rotations around 'X' 'Y' and 'Z' axis
 /*  Whole cube rotations to be called by cubeMove, update array 'a'
     according to string 'b'. Call subfunction cubeFRotate to reorient
-    specific faces as necessary.
-  
-            00 10 20
-            30 40 50
-            60 70 90
-   01 11 21 02 12 22 03 13 23 04 14 24
-   31 41 51 32 42 52 33 43 53 34 44 54
-   61 71 81 62 72 82 63 73 83 64 74 84
-            05 15 25
-            35 45 55
-            65 75 85
-*/
-
+    specific faces as necessary.  */
     char temp[9][6];
     int i, j;
     for(i = 0; i < 9; i++){ //  Initialize 'temp' with entire cubeMap
-        for(j = 0; j < 6; j++){
-            temp[i][j] = a[i][j];
-        }
+        for(j = 0; j < 6; j++) temp[i][j] = a[i][j];
     }
     if(b == "Y"){   //  Rotate whole cube 'cw' around Y-axis
         for(i = 1; i < 5; i++){
             for(j = 0; j < 9; j++){
-                if(i == 4){
-                    a[j][i] = temp[j][1];
-                }
-                else{
-                    a[j][i] = temp[j][i + 1];
-                }
+                if(i == 4) a[j][i] = temp[j][1];
+                else a[j][i] = temp[j][i + 1];
             }
         }
         cubeFRotate(a, 0, "cw");
@@ -283,12 +256,8 @@ void cubeRotate(char a[9][6], string b){    //  Whole cube rotations around 'X' 
     if(b == "Y\'"){ //  Rotate whole cube 'ccw' around Y-axis
         for(i = 1; i < 5; i++){
             for(j = 0; j < 9; j++){
-                if(i == 1){
-                    a[j][i] = temp[j][4];
-                }
-                else{
-                    a[j][i] = temp[j][i - 1];
-                }
+                if(i == 1) a[j][i] = temp[j][4];
+                else a[j][i] = temp[j][i - 1];
             }
         }
         cubeFRotate(a, 0, "ccw");
@@ -331,12 +300,8 @@ void cubeRotate(char a[9][6], string b){    //  Whole cube rotations around 'X' 
             a[j][3] = temp[j][0];
         }
         for(i = 0; i < 6; i++){
-            if(i == 4){
-                cubeFRotate(a, i, "ccw");
-            }
-            else{
-                cubeFRotate(a, i, "cw");
-            }
+            if(i == 4) cubeFRotate(a, i, "ccw");
+            else cubeFRotate(a, i, "cw");
         }
     }
     if(b == "Z\'"){ //  Rotate whole cube 'ccw' around Z-axis
@@ -347,12 +312,8 @@ void cubeRotate(char a[9][6], string b){    //  Whole cube rotations around 'X' 
             a[j][3] = temp[j][5];
         }
         for(i = 0; i < 6; i++){
-            if(i == 4){
-                cubeFRotate(a, i, "cw");
-            }
-            else{
-                cubeFRotate(a, i, "ccw");
-            }
+            if(i == 4) cubeFRotate(a, i, "cw");
+            else cubeFRotate(a, i, "ccw");
         }
     }
 }
@@ -370,9 +331,7 @@ void cubeFRotate(char a[9][6], int b, string c){    //  Rotates face given face 
     temp[3] = a[7][b];
     temp[6] = a[8][b];
     if(c == "cw"){
-        for(i = 0; i < 9; i++){
-            a[i][b] = temp[i];
-        }
+        for(i = 0; i < 9; i++) a[i][b] = temp[i];
     }
     if(c == "ccw"){
         for(i = 0; i < 9; i++){
@@ -385,19 +344,7 @@ void cubeFRotate(char a[9][6], int b, string c){    //  Rotates face given face 
 void cubeSRotate(char a[9][6], int b, string c){    //  Rotate a slice given adjacent face 'b' and "cw" or "ccw"
 /*  Cube slice rotations to be called by cubeMove, update array 'a'
     according to face 'b' and string 'c'. Call subfunction cubeFRotate
-    to reorient specific faces as necessary.
-  
-            00 10 20
-            30 40 50
-            60 70 90
-   01 11 21 02 12 22 03 13 23 04 14 24
-   31 41 51 32 42 52 33 43 53 34 44 54
-   61 71 81 62 72 82 63 73 83 64 74 84
-            05 15 25
-            35 45 55
-            65 75 85
-*/
-
+    to reorient specific faces as necessary.  */
     int i, j;
     char tempB[12], tempC[12];
     switch(b){  //  Bring face 'b' to face '2'
@@ -425,28 +372,18 @@ void cubeSRotate(char a[9][6], int b, string c){    //  Rotate a slice given adj
     }
 //  Call initSRotate, intialize additional temp array, and rotate values "cw" or "ccw"
     initSRotate(a, tempB, false);
-    for(i = 0; i < 12; i++){
-        tempC[i] = tempB[i];
-    }
+    for(i = 0; i < 12; i++) tempC[i] = tempB[i];
     if(c == "cw"){
         for(i = 0; i < 12; i++){
-            if(i < 3){
-                tempB[i] = tempC[i + 9];
-            }
-            else{
-                tempB[i] = tempC[i - 3];
-            }
+            if(i < 3) tempB[i] = tempC[i + 9];
+            else tempB[i] = tempC[i - 3];
         }
         cubeFRotate(a, 2, "cw");
     }
     else if(c == "ccw"){
         for(i = 0; i < 12; i++){
-            if(i < 9){
-                tempB[i] = tempC[i + 3];
-            }
-            else{
-                tempB[i] = tempC[i - 9];
-            }
+            if(i < 9) tempB[i] = tempC[i + 3];
+            else tempB[i] = tempC[i - 9];
         }
         cubeFRotate(a, 2, "ccw");
     }
@@ -640,18 +577,13 @@ bool cubeValidate(char a[9][6]){    //  Returns true/false based on completed fa
 //  face. If equality comparison loop is true, return true, else return false.
     char temp[6];
     int i, j;
-    for(i = 0; i < 6; i++){
-        temp[i] = a[4][i];
-    }
+    for(i = 0; i < 6; i++) temp[i] = a[4][i];
     for(i = 0; i < 9; i++){
         for(j = 0; j < 6; j++){
-            if(temp[j] != a[i][j]){
-                return false;
-            }
+            if(temp[j] != a[i][j]) return false;
         }
     }
-
-return true;
+    return true;
 }
 
 void timePrint(int a){  //  Print elapsed time
@@ -675,13 +607,10 @@ void timePrint(int a){  //  Print elapsed time
         }
     }
     while(b != 0);
-//  Conditional output of hours and/or minutes if 'h' and/or 'm' are >= 1
-    if(h >= 1){
-        cout << h << " hours ";
-    }
-    if(m >= 1 or h >= 1){   //  account for possibility that 'm' = 0 while 'h' >= 1
-        cout << m << " minutes and ";
-    }
+    //  Conditional output of hours and/or minutes if 'h' and/or 'm' are >= 1
+    if(h >= 1) cout << h << " hours ";
+    //  account for possibility that 'm' = 0 while 'h' >= 1
+    if(m >= 1 or h >= 1) cout << m << " minutes and ";
     cout << s << " seconds have elapsed...";
 }
 
@@ -689,9 +618,7 @@ int countLines(ifstream &inf){  //  Subroutine for cubeTime, getData, & high-sco
     inf.open("hs.txt");
     int i = 0;
     string temp;
-    while(getline(inf, temp)){
-        i++;
-    }
+    while(getline(inf, temp)) i++;
     inf.close();
     return i;
 }
